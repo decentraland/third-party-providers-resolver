@@ -1,12 +1,16 @@
-import type { IFetchComponent } from "@well-known-components/http-server"
+import type { IFetchComponent } from '@well-known-components/http-server'
 import type {
   IConfigComponent,
   ILoggerComponent,
   IHttpServerComponent,
   IBaseComponent,
-  IMetricsComponent,
-} from "@well-known-components/interfaces"
-import { metricDeclarations } from "./metrics"
+  IMetricsComponent
+} from '@well-known-components/interfaces'
+import { metricDeclarations } from './metrics'
+import { TheGraphComponent } from './ports/the-graph'
+import { ThirdPartyProvidersFetcher } from './adapters/third-party-providers-fetcher'
+import { ThirdPartyProviderHealthChecker } from './adapters/third-party-provider-health-checker'
+import { ThirdPartyProvidersMemoryStorage } from './logic/third-party-providers-memory-storage'
 
 export type GlobalContext = {
   components: BaseComponents
@@ -19,6 +23,10 @@ export type BaseComponents = {
   server: IHttpServerComponent<GlobalContext>
   fetch: IFetchComponent
   metrics: IMetricsComponent<keyof typeof metricDeclarations>
+  theGraph: TheGraphComponent
+  thirdPartyProvidersFetcher: ThirdPartyProvidersFetcher
+  thirdPartyProvidersMemoryStorage: ThirdPartyProvidersMemoryStorage
+  thirdPartyProviderHealthChecker: ThirdPartyProviderHealthChecker
 }
 
 // components used in runtime
@@ -44,3 +52,14 @@ export type HandlerContextWithPath<
 >
 
 export type Context<Path extends string = any> = IHttpServerComponent.PathAwareContext<GlobalContext, Path>
+
+export type ThirdPartyProvider = {
+  id: string
+  resolver: string
+  metadata: {
+    thirdParty: {
+      name: string
+      description: string
+    }
+  }
+}
