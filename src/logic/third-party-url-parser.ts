@@ -7,7 +7,7 @@ export default async function parse(thirdPartyProvider: ThirdPartyProvider): Pro
   const parsedUrn = await parseUrn(thirdPartyProvider.id)
 
   if (!parsedUrn || parsedUrn.type !== URN_THIRD_PARTY_NAME_TYPE) {
-    throw new Error(`Couldn't parse third party id: ${thirdPartyProvider.id}`)
+    throw new Error(`Could not parse third party id: ${thirdPartyProvider.id}`)
   }
 
   const baseUrl = new URL(thirdPartyProvider.resolver).href.replace(/\/$/, '')
