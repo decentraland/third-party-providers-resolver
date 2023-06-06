@@ -14,7 +14,7 @@ export function createThirdPartyProvidersMemoryStorage({
   'thirdPartyProvidersFetcher' | 'thirdPartyProviderHealthChecker'
 >): ThirdPartyProvidersMemoryStorage {
   const cache = new LRUCache<number, ThirdPartyProvider[]>({
-    max: 16,
+    max: 1,
     ttl: 1000 * 60 * 60 * 6, // 6 hours
     fetchMethod: async function (_: number, staleValue: ThirdPartyProvider[] | undefined) {
       const thirdPartyProviders: ThirdPartyProvider[] = await thirdPartyProvidersFetcher.getAll()
