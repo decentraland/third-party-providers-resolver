@@ -32,7 +32,7 @@ export function testWithComponents(
 }
 
 async function initComponents(overridenComponents?: Partial<TestComponents>): Promise<TestComponents> {
-  const config = createConfigComponent({ ...defaultServerConfig(), HTTP_SERVER_PORT: '8686' })
+  const config = createConfigComponent({ ...defaultServerConfig(), HTTP_SERVER_PORT: '7373' })
   const components = await originalInitComponents(overridenComponents)
 
   return {
