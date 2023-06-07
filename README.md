@@ -1,4 +1,4 @@
-# Third Party Resolver
+# Third Party Providers Resolver
 
 This service filters and returns the [Third Party Providers](https://adr.decentraland.org/adr/ADR-42) that are in a healthy state.
 
