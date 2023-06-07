@@ -1,4 +1,4 @@
-# Third Party Resolver
+# Third Party Providers Resolver
 
 This service filters and returns the [Third Party Providers](https://adr.decentraland.org/adr/ADR-42) that are in a healthy state.
 
@@ -23,24 +23,25 @@ This service only exposes `GET /providers` endpoint which returns a JSON contain
 {
   "thirdPartyProviders": [
     {
-      "id": "urn:decentraland:mumbai:collections-thirdparty:ignore-me",
+      "id": "urn:decentraland:mumbai:collections-thirdparty:first-collection",
       "resolver": "https://third-party-resolver-api.decentraland.zone/v1",
       "metadata": {
         "thirdParty": {
-          "name": "Ignore me",
-          "description": "Ignore me"
+          "name": "First collection",
+          "description": "Nonexistent: only for docs purposes."
         }
       }
     },
     {
-      "id": "urn:decentraland:mumbai:collections-thirdparty:jean-pier",
+      "id": "urn:decentraland:mumbai:collections-thirdparty:second-collection",
       "resolver": "https://third-party-resolver-api.decentraland.zone/v1",
       "metadata": {
         "thirdParty": {
-          "name": "Jean Pier",
-          "description": "La verdad es dura 3"
+          "name": "Second collection",
+          "description": "Nonexistent: only for docs purposes."
         }
       }
     }
+  ]
 }
 ```
