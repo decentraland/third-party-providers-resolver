@@ -4,7 +4,7 @@ export type ThirdPartyProvidersFetcher = {
   getAll(): Promise<ThirdPartyProvider[]>
 }
 
-export type ThirdPartyResolversQueryResults = {
+type ThirdPartyResolversQueryResults = {
   thirdParties: ThirdPartyProvider[]
 }
 

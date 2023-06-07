@@ -13,11 +13,11 @@ What this service does:
 
 ### What healthy means on this service's context?
 
-If a Third Party Provider's endpoint returns a `200 OK` status code when fetched, it will be regarded as **healthy**.
+If any Third Party Provider's endpoint returns a `200 OK` status code when fetched, it will be regarded as **healthy**.
 
 ## Exposed endpoints
 
-This service only exposes `GET /providers` endpoint which returns a JSON containing the healthy providers. Response example:
+This service only exposes `GET /providers` endpoint which returns a JSON containing the healthy providers (_the unhealthy providers are not returned on this endpoint_). Response example:
 
 ```json
 {

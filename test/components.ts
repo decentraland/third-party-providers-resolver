@@ -21,9 +21,7 @@ export const test = createRunner<TestComponents>({
   initComponents
 })
 
-export function testWithComponents(
-  preConfigureComponents: () => Partial<TestComponents> //{ fetchComponent?: IFetchComponent; theGraphComponent?: TheGraphComponent }
-) {
+export function testWithComponents(preConfigureComponents: () => Partial<TestComponents>) {
   const preConfiguredComponents = preConfigureComponents()
   return createRunner<TestComponents>({
     main,
