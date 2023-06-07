@@ -1,50 +1,46 @@
-# template-server
+# Third Party Resolver
 
-## Architecture
+This service filters and returns the [Third Party Providers](https://adr.decentraland.org/adr/ADR-42) that are in a healthy state.
 
-Extension of "ports and adapters architecture", also known as "hexagonal architecture".
+## Implementation
 
-With this architecture, code is organized into several layers: logic, controllers, adapters, and components (ports).
+What this service does:
 
-## Application lifecycle
+1. Retrieves all Third Party Providers from TheGraph
+2. Checks the health of each Third Party Provider by fetching the endpoint required in the [ADR-42](https://adr.decentraland.org/adr/ADR-42)
+3. Caches the providers that are healthy in a memory storage (_LRU cache_)
+4. Returns the healthy providers every time the endpoint `GET /providers` is called
 
-1. **Start application lifecycle** - Handled by [src/index.ts](src/index.ts) in only one line of code: `Lifecycle.run({ main, initComponents })`
-2. **Create components** - Handled by [src/components.ts](src/components.ts) in the function `initComponents`
-3. **Wire application & start components** - Handled by [src/service.ts](src/service.ts) in the funciton `main`.
-   1. First wire HTTP routes and other events with [controllers](#src/controllers)
-   2. Then call to `startComponents()` to initialize the components (i.e. http-listener)
+### What healthy means on this service's context?
 
-The same lifecycle is also valid for tests: [test/components.ts](test/components.ts)
+If any Third Party Provider's endpoint returns a `200 OK` status code when fetched, it will be regarded as **healthy**.
 
-## Namespaces
+## Exposed endpoints
 
-### src/logic
+This service only exposes `GET /providers` endpoint which returns a JSON containing the healthy providers (_the unhealthy providers are not returned on this endpoint_). Response example:
 
-Deals with pure business logic and shouldn't have side-effects or throw exceptions.
-
-### src/controllers
-
-The "glue" between all the other layers, orchestrating calls between pure business logic and adapters.
-
-Controllers always receive an hydrated context containing components and parameters to call the business logic e.g:
-
-```ts
-// handler for /ping
-export async function pingHandler(context: {
-  url: URL // parameter added by http-server
-  components: AppComponents // components of the app, part of the global context
-}) {
-  components.metrics.increment("test_ping_counter")
-  return { status: 200 }
+```json
+{
+  "thirdPartyProviders": [
+    {
+      "id": "urn:decentraland:mumbai:collections-thirdparty:ignore-me",
+      "resolver": "https://third-party-resolver-api.decentraland.zone/v1",
+      "metadata": {
+        "thirdParty": {
+          "name": "Ignore me",
+          "description": "Ignore me"
+        }
+      }
+    },
+    {
+      "id": "urn:decentraland:mumbai:collections-thirdparty:jean-pier",
+      "resolver": "https://third-party-resolver-api.decentraland.zone/v1",
+      "metadata": {
+        "thirdParty": {
+          "name": "Jean Pier",
+          "description": "La verdad es dura 3"
+        }
+      }
+    }
 }
 ```
-
-### src/adapters
-
-The layer that converts external data representations into internal ones, and vice-versa. Acts as buffer to protect the service from changes in the outside world; when a data representation changes, you only need to change how the adapters deal with it.
-
-### src/components.ts
-
-We use the components abstraction to organize our adapters (e.g. HTTP client, database client, redis client) and any other logic that needs to track mutable state or encode dependencies between stateful components. For every environment (e.g. test, e2e, prod, staging...) we have a different version of our component systems, enabling us to easily inject mocks or different implementations for different contexts.
-
-We make components available to incoming http and kafka handlers. For instance, the http-server handlers have access to things like the database or HTTP components, and pass them down to the controller level for general use.
