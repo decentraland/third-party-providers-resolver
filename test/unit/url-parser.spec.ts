@@ -11,7 +11,9 @@ describe('url-parser should', () => {
 
     const result = await sut(thirdPartyProvider)
 
-    expect(result).toBe('https://third-party-resolver-api.decentraland.zone/v1/registry/ignore-me/address/any/assets')
+    expect(result).toBe(
+      'https://third-party-resolver-api.decentraland.zone/v1/registry/ignore-me/address/0x6438c3b1fa97ba144ea38fcbcee5f0ccf4539b1d/assets'
+    )
   })
 
   it('throw an error if the Third Party Provider id is invalid', async () => {
