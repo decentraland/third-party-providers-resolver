@@ -40,13 +40,13 @@ on:
         required: true
       QUAY_TOKEN:
         required: true
-    outputs:
-      registry-path:
-        description: "Registry path"
-        value: ${{ needs.quay-build-push.registry-path }}
-      registry-paths:
-        description: "Registry paths (JSON)"
-        value: ${{ needs.quay-build-push.registry-paths }}
+    # outputs:
+    #   registry-path:
+    #     description: "Registry path"
+    #     value: ${{ needs.quay-build-push.registry-path }}
+    #   registry-paths:
+    #     description: "Registry paths (JSON)"
+    #     value: ${{ needs.quay-build-push.registry-paths }}
 
 jobs:
   quay-build-push:
@@ -65,7 +65,10 @@ jobs:
         with:
           image: ${{ inputs.service-name }}
           layers: ${{ inputs.layers }}
-          tags: ${{ github.sha }} ${{ github.ref_name }} ${{ inputs.docker-tag }}
+          tags: |-
+            ${{ github.sha }}
+            ${{ inputs.docker-tag }}
+            ${{ github.ref_type == 'tag' && github.ref_name || '' }}
           dockerfiles: |
             ./Dockerfile
           build-args: |
