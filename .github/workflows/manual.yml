@@ -43,10 +43,10 @@ on:
     outputs:
       registry-path:
         description: "Registry path"
-        value: ${{ jobs.quay-build-push.registry-path }}
+        value: ${{ needs.quay-build-push.registry-path }}
       registry-paths:
         description: "Registry paths (JSON)"
-        value: ${{ jobs.quay-build-push.registry-paths }}
+        value: ${{ needs.quay-build-push.registry-paths }}
 
 jobs:
   quay-build-push:
