@@ -1,0 +1,9 @@
+name: Manual
+
+on:
+  workflow_call:
+
+jobs:
+  release:
+    uses: decentraland/platform-actions/.github/workflows/apps-docker-manual-release.yml@feat/manual
+    secrets: inherit
