@@ -6,8 +6,7 @@ on:
       service-name:
         required: true
         type: string
-        description: |-
-          Service name to deploy
+        description: 'Service name to deploy'
       deployment-environment:
         required: true
         type: string
@@ -15,38 +14,27 @@ on:
           - 'dev'
           - 'stg'
           - 'prd'
-        description: |-
-          Target environment
+        description: 'Target environment'
       docker-tag:
         required: false
         type: string
-        description: |-
-          Docker tag to label the released image
-          Example values: next | latest
-      release-tag:
-        required: false
-        type: string
-        description: |-
-          Github release tag to label the released image
-          Required when releaseing to prod ('prd' environment)
-          Example value: 1.0.0
+        description: 'Docker tag to label the released image'
+        options:
+          - 'latest'
+          - 'next'
       build-args:
         required: false
         type: string
-        description: |-
-          Any arguments needed to build the image
+        description: 'Any arguments needed to build the docker image'
       layers:
         required: false
         type: boolean
         default: true
-        description: |-
-          Indicates if the Docker layers cache mechanism should be used
-          Default value: true
+        description: 'Indicates if the Docker layers cache mechanism should be used. Default value: true'
       dockerfile-url:
         required: false
         type: string
-        description: |-
-          Place the URL from where the Dockerfile should be downloaded
+        description: 'Place the URL from where the Dockerfile should be downloaded'
     secrets:
       QUAY_USERNAME:
         required: true
@@ -71,29 +59,18 @@ jobs:
       - name: download Dockerfile
         if: ${{ inputs.dockerfile-url }}
         run: wget -O Dockerfile ${{ inputs.dockerfile-url }}
-      - name: Validate Inputs
-        id: validate-inputs
-        run: |
-          if [ -z "${{ inputs.release-tag }}" ] && [ "${{ inputs.deployment-environment }}" == "prd" ]; then
-            echo "Input 'release-tag' is required when 'deployment-environment' is set to 'prd'."
-            exit 1
-          fi
       - name: Build Image
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ inputs.service-name }}
           layers: ${{ inputs.layers }}
-          tags: |-
-            ${{ github.sha }}
-            ${{ inputs.docker-tag }}
-            ${{ if eq(inputs.environment, 'prd') }}${{ inputs.release-tag }}${{ endif }}
-            ${{ if eq(inputs.environment, 'prd') }}latest${{ endif }}
+          tags: ${{ github.sha }} ${{ github.ref_name }} ${{ inputs.docker-tag }}
           dockerfiles: |
             ./Dockerfile
           build-args: |
             ${{ inputs.build-args }}
-            CURRENT_VERSION=${{ inputs.release-tag }}
+            CURRENT_VERSION=${{ github.ref_name }}
             COMMIT_HASH=${{ github.sha }}
       # Podman Login action (https://github.com/redhat-actions/podman-login) also be used to log in,
       # in which case 'username' and 'password' can be omitted.
