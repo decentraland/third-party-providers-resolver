@@ -1,4 +1,4 @@
-name: Manual
+name: Manual deployment
 
 on:
   workflow_dispatch:
@@ -11,32 +11,21 @@ on:
           - 'stg'
           - 'prd'
         description: 'Target environment'
-      docker-tag:
-        required: false
+      docker-image:
+        required: true
         type: string
-        description: 'Docker tag to label the released image'
-        options:
-          - 'latest'
-          - 'next'
+        description: 'Docker image to deploy: latest, next, <tag> or <commit>'
     secrets:
       QUAY_USERNAME:
         required: true
       QUAY_TOKEN:
         required: true
-    # outputs:
-    #   registry-path:
-    #     description: "Registry path"
-    #     value: ${{ needs.quay-build-push.registry-path }}
-    #   registry-paths:
-    #     description: "Registry paths (JSON)"
-    #     value: ${{ needs.quay-build-push.registry-paths }}
 
 jobs:
   pr:
-    uses: decentraland/platform-actions/.github/workflows/apps-docker-manual-release.yml@feat/manual
+    uses: decentraland/platform-actions/.github/workflows/apps-docker-manual-deployment.yml@feat/manual
     with:
       service-name: third-party-providers-resolver
-      dockerfile-url: https://raw.githubusercontent.com/decentraland/platform-actions/main/Dockerfile.alpine
-      docker-tag: ${{ inputs.docker-tag }}
       deployment-environment: ${{ inputs.deployment-environment }}
+      quay-registry-path: quay.io/decentraland/third-party-providers-resolver:${{ inputs.docker-image }}
     secrets: inherit
