@@ -23,7 +23,7 @@ on:
 
 jobs:
   pr:
-    uses: decentraland/platform-actions/.github/workflows/apps-docker-manual-deployment.yml@feat/manual
+    uses: decentraland/platform-actions/.github/workflows/apps-docker-manual-deployment.yml@main
     with:
       service-name: third-party-providers-resolver
       deployment-environment: ${{ inputs.deployment-environment }}
