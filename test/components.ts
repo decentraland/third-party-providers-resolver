@@ -7,7 +7,7 @@ import { TestComponents } from '../src/types'
 import { initComponents as originalInitComponents } from '../src/components'
 import { createConfigComponent } from '@well-known-components/env-config-provider'
 import { createTestMetricsComponent } from '@well-known-components/metrics'
-import { metricDeclarations } from '../src/metrics'
+import { metricsDeclaration } from '../src/metrics'
 
 /**
  * Behaves like Jest "describe" function, used to describe a test for a
@@ -36,7 +36,7 @@ async function initComponents(overridenComponents?: Partial<TestComponents>): Pr
   return {
     ...components,
     ...overridenComponents,
-    metrics: createTestMetricsComponent(metricDeclarations),
+    metrics: createTestMetricsComponent(metricsDeclaration),
     localFetch: await createLocalFetchCompoment(config)
   }
 }

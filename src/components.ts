@@ -4,7 +4,7 @@ import { createLogComponent } from '@well-known-components/logger'
 import { createFetchComponent } from '@well-known-components/fetch-component'
 import { createMetricsComponent, instrumentHttpServerWithMetrics } from '@well-known-components/metrics'
 import { AppComponents, GlobalContext } from './types'
-import { metricDeclarations } from './metrics'
+import { metricsDeclaration } from './metrics'
 import { IFetchComponent } from '@well-known-components/interfaces'
 import { TheGraphComponent, createTheGraphComponent } from './ports/the-graph'
 import { createThirdPartyProviderHealthComponent } from './adapters/third-party-provider-health-checker'
@@ -14,7 +14,7 @@ import { createThirdPartyProvidersMemoryStorage } from './logic/third-party-prov
 // Initialize all the components of the app
 export async function initComponents(injectedComponents?: Partial<AppComponents>): Promise<AppComponents> {
   const config = await createDotEnvConfigComponent({ path: ['.env.default', '.env'] })
-  const metrics = await createMetricsComponent(metricDeclarations, { config })
+  const metrics = await createMetricsComponent(metricsDeclaration, { config })
   const logs = await createLogComponent({ metrics })
   const server = await createServerComponent<GlobalContext>({ config, logs }, {})
   const statusChecks = await createStatusCheckComponent({ server, config })
@@ -25,7 +25,7 @@ export async function initComponents(injectedComponents?: Partial<AppComponents>
     injectedComponents?.theGraph ?? (await createTheGraphComponent({ config, logs, fetch, metrics }))
 
   const thirdPartyProvidersFetcher = createThirdPartyProvidersFetcher({ theGraph, logs })
-  const thirdPartyProviderHealthChecker = createThirdPartyProviderHealthComponent({ fetch, logs })
+  const thirdPartyProviderHealthChecker = createThirdPartyProviderHealthComponent({ fetch, logs, metrics })
   const thirdPartyProvidersMemoryStorage = createThirdPartyProvidersMemoryStorage({
     thirdPartyProvidersFetcher,
     thirdPartyProviderHealthChecker

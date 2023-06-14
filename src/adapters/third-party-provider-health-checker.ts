@@ -12,8 +12,9 @@ function isThirdPartyProviderDisabled(error: any): boolean {
 
 export function createThirdPartyProviderHealthComponent({
   fetch,
-  logs
-}: Pick<AppComponents, 'fetch' | 'logs'>): ThirdPartyProviderHealthChecker {
+  logs,
+  metrics
+}: Pick<AppComponents, 'fetch' | 'logs' | 'metrics'>): ThirdPartyProviderHealthChecker {
   const logger = logs.getLogger('third-party-provider-health-checker')
 
   return {
@@ -23,6 +24,8 @@ export function createThirdPartyProviderHealthComponent({
       try {
         await fetch.fetch(thirdPartyUrl)
 
+        // report provider as healthy
+        metrics.observe('third_party_provider_health', { provider: thirdPartyProvider.id }, 1)
         return true
       } catch (err: any) {
         logger.warn('The following Third Party Provider is unhealthy.', {
@@ -30,6 +33,8 @@ export function createThirdPartyProviderHealthComponent({
           thirdPartyUrl
         })
 
+        // report provider as unhealthy
+        metrics.observe('third_party_provider_health', { provider: thirdPartyProvider.id }, 0)
         if (isThirdPartyProviderDisabled(err)) {
           logger.error('Domain was not resolved')
         }
