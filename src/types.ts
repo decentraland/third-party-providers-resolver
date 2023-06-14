@@ -6,7 +6,7 @@ import type {
   IBaseComponent,
   IMetricsComponent
 } from '@well-known-components/interfaces'
-import { metricDeclarations } from './metrics'
+import { metricsDeclaration } from './metrics'
 import { TheGraphComponent } from './ports/the-graph'
 import { ThirdPartyProvidersFetcher } from './adapters/third-party-providers-fetcher'
 import { ThirdPartyProviderHealthChecker } from './adapters/third-party-provider-health-checker'
@@ -22,7 +22,7 @@ export type BaseComponents = {
   logs: ILoggerComponent
   server: IHttpServerComponent<GlobalContext>
   fetch: IFetchComponent
-  metrics: IMetricsComponent<keyof typeof metricDeclarations>
+  metrics: IMetricsComponent<keyof typeof metricsDeclaration>
   theGraph: TheGraphComponent
   thirdPartyProvidersFetcher: ThirdPartyProvidersFetcher
   thirdPartyProvidersMemoryStorage: ThirdPartyProvidersMemoryStorage
