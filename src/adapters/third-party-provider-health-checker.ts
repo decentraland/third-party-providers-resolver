@@ -6,6 +6,12 @@ export type ThirdPartyProviderHealthChecker = IBaseComponent & {
   isHealthy(thirdPartyProvider: ThirdPartyProvider): Promise<boolean>
 }
 
+enum HealthState {
+  Healthy = 1,
+  Unhealthy = 2,
+  Inexistent = 3
+}
+
 function isThirdPartyProviderDisabled(error: any): boolean {
   return !!error && error.errno === 'ENOTFOUND'
 }
@@ -20,24 +26,33 @@ export function createThirdPartyProviderHealthComponent({
   return {
     async isHealthy(thirdPartyProvider: ThirdPartyProvider): Promise<boolean> {
       const thirdPartyUrl: string = await parse(thirdPartyProvider)
+      const thirdPartyProviderMetricLabels = {
+        providerId: thirdPartyProvider.id,
+        providerName: thirdPartyProvider.metadata.thirdParty.name
+      }
 
       try {
         await fetch.fetch(thirdPartyUrl)
 
         // report provider as healthy
-        metrics.observe('third_party_provider_health', { provider: thirdPartyProvider.id }, 1)
+        metrics.observe('third_party_provider_health', thirdPartyProviderMetricLabels, HealthState.Healthy)
         return true
       } catch (err: any) {
+        let unhealthyProviderState: HealthState
         logger.warn('The following Third Party Provider is unhealthy.', {
           thirdPartyProvider: thirdPartyProvider.id,
           thirdPartyUrl
         })
 
-        // report provider as unhealthy
-        metrics.observe('third_party_provider_health', { provider: thirdPartyProvider.id }, 0)
         if (isThirdPartyProviderDisabled(err)) {
-          logger.error('Domain was not resolved')
+          logger.warn('Domain was not resolved')
+          unhealthyProviderState = HealthState.Inexistent
+        } else {
+          unhealthyProviderState = HealthState.Unhealthy
         }
+
+        // report provider as unhealthy or inexistent
+        metrics.observe('third_party_provider_health', thirdPartyProviderMetricLabels, unhealthyProviderState)
 
         return false
       }

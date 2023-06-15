@@ -10,6 +10,6 @@ export const metricsDeclaration = validateMetricsDeclaration({
   third_party_provider_health: {
     help: 'Tracks the health of Third Party Providers',
     type: 'gauge',
-    labelNames: ['provider']
+    labelNames: ['providerId', 'providerName']
   }
 })
