@@ -1,12 +1,16 @@
 import { createDotEnvConfigComponent } from '@well-known-components/env-config-provider'
-import { createServerComponent, createStatusCheckComponent } from '@well-known-components/http-server'
+import {
+  createServerComponent,
+  createStatusCheckComponent,
+  instrumentHttpServerWithPromClientRegistry
+} from '@well-known-components/http-server'
 import { createLogComponent } from '@well-known-components/logger'
 import { createFetchComponent } from '@well-known-components/fetch-component'
-import { createMetricsComponent, instrumentHttpServerWithMetrics } from '@well-known-components/metrics'
+import { createMetricsComponent } from '@well-known-components/metrics'
 import { AppComponents, GlobalContext } from './types'
 import { metricsDeclaration } from './metrics'
 import { IFetchComponent } from '@well-known-components/interfaces'
-import { TheGraphComponent, createTheGraphComponent } from './ports/the-graph'
+import { createTheGraphComponent, TheGraphComponent } from './ports/the-graph'
 import { createThirdPartyProviderHealthComponent } from './adapters/third-party-provider-health-checker'
 import { createThirdPartyProvidersFetcher } from './adapters/third-party-providers-fetcher'
 import { createThirdPartyProvidersMemoryStorage } from './logic/third-party-providers-memory-storage'
@@ -31,7 +35,7 @@ export async function initComponents(injectedComponents?: Partial<AppComponents>
     thirdPartyProviderHealthChecker
   })
 
-  await instrumentHttpServerWithMetrics({ metrics, server, config })
+  await instrumentHttpServerWithPromClientRegistry({ metrics, server, config, registry: metrics.registry! })
 
   return {
     config,
