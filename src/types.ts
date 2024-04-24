@@ -1,4 +1,4 @@
-import type { IFetchComponent } from '@well-known-components/http-server'
+import type { IFetchComponent } from '@well-known-components/interfaces'
 import type {
   IConfigComponent,
   ILoggerComponent,
