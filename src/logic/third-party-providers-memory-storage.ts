@@ -9,11 +9,13 @@ export type ThirdPartyProvidersMemoryStorage = IBaseComponent & {
 
 export function createThirdPartyProvidersMemoryStorage({
   thirdPartyProvidersFetcher,
-  thirdPartyProviderHealthChecker
+  thirdPartyProviderHealthChecker,
+  logs
 }: Pick<
   AppComponents,
-  'thirdPartyProvidersFetcher' | 'thirdPartyProviderHealthChecker'
+  'thirdPartyProvidersFetcher' | 'thirdPartyProviderHealthChecker' | 'logs'
 >): ThirdPartyProvidersMemoryStorage {
+  const logger = logs.getLogger('third-party-providers-memory-storage')
   const jobSchedule = '0 */3 * * *' // every 3 hours
   let job: ScheduledTask
   const cache = new LRUCache<number, ThirdPartyProvider[]>({
@@ -42,9 +44,12 @@ export function createThirdPartyProvidersMemoryStorage({
   return {
     async get(refreshData?: boolean): Promise<ThirdPartyProvider[]> {
       const thirdPartyProviders = await cache.fetch(0, { forceRefresh: !!refreshData })
-      if (thirdPartyProviders) return thirdPartyProviders
-
-      throw new Error('Could not fetch Third Party providers')
+      if (thirdPartyProviders) {
+        return thirdPartyProviders
+      } else {
+        logger.error('Could not fetch Third Party providers')
+        return []
+      }
     },
     async start(): Promise<void> {
       await this.get()
