@@ -32,7 +32,8 @@ export async function initComponents(injectedComponents?: Partial<AppComponents>
   const thirdPartyProviderHealthChecker = createThirdPartyProviderHealthComponent({ fetch, logs, metrics })
   const thirdPartyProvidersMemoryStorage = createThirdPartyProvidersMemoryStorage({
     thirdPartyProvidersFetcher,
-    thirdPartyProviderHealthChecker
+    thirdPartyProviderHealthChecker,
+    logs
   })
 
   await instrumentHttpServerWithPromClientRegistry({ metrics, server, config, registry: metrics.registry! })

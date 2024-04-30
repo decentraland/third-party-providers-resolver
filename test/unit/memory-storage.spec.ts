@@ -1,6 +1,8 @@
+import { error } from 'console'
 import { ThirdPartyProviderHealthChecker } from '../../src/adapters/third-party-provider-health-checker'
 import { ThirdPartyProvidersFetcher } from '../../src/adapters/third-party-providers-fetcher'
 import { createThirdPartyProvidersMemoryStorage } from '../../src/logic/third-party-providers-memory-storage'
+import { ILoggerComponent } from '@well-known-components/interfaces'
 
 describe('memory-storage should', () => {
   const thirdPartyProviders = [
@@ -14,6 +16,15 @@ describe('memory-storage should', () => {
   const thirdPartyProvidersHealthCheckerMock: ThirdPartyProviderHealthChecker = {
     isHealthy: jest.fn()
   }
+  const logsMock = {
+    getLogger: (_) => ({
+      log: jest.fn(),
+      debug: jest.fn(),
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn()
+    })
+  }
 
   afterEach(() => {
     jest.resetAllMocks()
@@ -25,7 +36,8 @@ describe('memory-storage should', () => {
     thirdPartyProvidersFetcherMock.getAll = jest.fn().mockResolvedValue(thirdPartyProviders)
     const sut = createThirdPartyProvidersMemoryStorage({
       thirdPartyProvidersFetcher: thirdPartyProvidersFetcherMock,
-      thirdPartyProviderHealthChecker: thirdPartyProvidersHealthCheckerMock
+      thirdPartyProviderHealthChecker: thirdPartyProvidersHealthCheckerMock,
+      logs: logsMock
     })
 
     // Act
@@ -41,7 +53,8 @@ describe('memory-storage should', () => {
     thirdPartyProvidersFetcherMock.getAll = jest.fn().mockResolvedValue(thirdPartyProviders)
     const sut = createThirdPartyProvidersMemoryStorage({
       thirdPartyProvidersFetcher: thirdPartyProvidersFetcherMock,
-      thirdPartyProviderHealthChecker: thirdPartyProvidersHealthCheckerMock
+      thirdPartyProviderHealthChecker: thirdPartyProvidersHealthCheckerMock,
+      logs: logsMock
     })
 
     // Act
@@ -54,13 +67,17 @@ describe('memory-storage should', () => {
   it('should reject if no providers were found on first call', async () => {
     // Arrange
     thirdPartyProvidersFetcherMock.getAll = jest.fn().mockResolvedValue([])
+    const logger = logsMock.getLogger('mock-logger')
+    logsMock.getLogger = jest.fn().mockReturnValue(logger)
     const sut = createThirdPartyProvidersMemoryStorage({
       thirdPartyProvidersFetcher: thirdPartyProvidersFetcherMock,
-      thirdPartyProviderHealthChecker: thirdPartyProvidersHealthCheckerMock
+      thirdPartyProviderHealthChecker: thirdPartyProvidersHealthCheckerMock,
+      logs: logsMock
     })
 
     // Act & Assert
-    await expect(sut.get()).rejects.toThrow('Could not fetch Third Party providers')
+    await sut.get()
+    expect(logger.error).toHaveBeenCalledWith('Could not fetch Third Party providers')
   })
 
   it('should return cached value on second call', async () => {
@@ -69,7 +86,8 @@ describe('memory-storage should', () => {
     thirdPartyProvidersHealthCheckerMock.isHealthy = jest.fn().mockResolvedValue(true)
     const sut = createThirdPartyProvidersMemoryStorage({
       thirdPartyProvidersFetcher: thirdPartyProvidersFetcherMock,
-      thirdPartyProviderHealthChecker: thirdPartyProvidersHealthCheckerMock
+      thirdPartyProviderHealthChecker: thirdPartyProvidersHealthCheckerMock,
+      logs: logsMock
     })
 
     // Act
