@@ -38,7 +38,18 @@ export function createThirdPartyProviderHealthComponent({
         metrics.observe('third_party_provider_health', thirdPartyProviderMetricLabels, HealthState.Healthy)
         return true
       } catch (err: any) {
-        let unhealthyProviderState: HealthState
+        let providerState: HealthState
+
+        // report 404 as healthy
+        if (err) {
+          const statusCode = err.message?.match(/Got status (\d+)/)?.[1]
+
+          if (statusCode === '404') {
+            providerState = HealthState.Healthy
+            return true
+          }
+        }
+
         logger.warn('The following Third Party Provider is unhealthy.', {
           thirdPartyProvider: thirdPartyProvider.id,
           thirdPartyUrl
@@ -46,13 +57,13 @@ export function createThirdPartyProviderHealthComponent({
 
         if (isThirdPartyProviderDisabled(err)) {
           logger.warn('Domain was not resolved')
-          unhealthyProviderState = HealthState.Inexistent
+          providerState = HealthState.Inexistent
         } else {
-          unhealthyProviderState = HealthState.Unhealthy
+          providerState = HealthState.Unhealthy
         }
 
         // report provider as unhealthy or inexistent
-        metrics.observe('third_party_provider_health', thirdPartyProviderMetricLabels, unhealthyProviderState)
+        metrics.observe('third_party_provider_health', thirdPartyProviderMetricLabels, providerState)
 
         return false
       }
