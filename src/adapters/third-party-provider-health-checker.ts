@@ -45,7 +45,7 @@ export function createThirdPartyProviderHealthComponent({
           const statusCode = err.message?.match(/Got status (\d+)/)?.[1]
 
           if (statusCode === '404') {
-            providerState = HealthState.Healthy
+            metrics.observe('third_party_provider_health', thirdPartyProviderMetricLabels, HealthState.Healthy)
             return true
           }
         }
