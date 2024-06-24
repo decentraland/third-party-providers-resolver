@@ -7,7 +7,7 @@
     "lint:check": "eslint '**/*.{js,ts}'"
   },
   "devDependencies": {
-    "@dcl/eslint-config": "^2.1.0",
+    "@dcl/eslint-config": "^2.1.1",
     "@types/node": "^20.2.5",
     "@types/node-cron": "^3.0.11",
     "@well-known-components/test-helpers": "^1.5.6",
