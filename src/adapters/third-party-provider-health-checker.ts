@@ -25,13 +25,14 @@ export function createThirdPartyProviderHealthComponent({
 
   return {
     async isHealthy(thirdPartyProvider: ThirdPartyProvider): Promise<boolean> {
-      const thirdPartyUrl: string = await parse(thirdPartyProvider)
+      let thirdPartyUrl: string | undefined = undefined
       const thirdPartyProviderMetricLabels = {
         providerId: thirdPartyProvider.id,
         providerName: thirdPartyProvider.metadata.thirdParty.name
       }
 
       try {
+        thirdPartyUrl = await parse(thirdPartyProvider)
         await fetch.fetch(thirdPartyUrl)
 
         // report provider as healthy
@@ -52,7 +53,7 @@ export function createThirdPartyProviderHealthComponent({
 
         logger.warn('The following Third Party Provider is unhealthy.', {
           thirdPartyProvider: thirdPartyProvider.id,
-          thirdPartyUrl
+          thirdPartyUrl: thirdPartyUrl || 'Could not parse URL'
         })
 
         if (isThirdPartyProviderDisabled(err)) {
