@@ -17,6 +17,10 @@ const QUERY_ALL_THIRD_PARTY_RESOLVERS = `
       thirdParty {
         name
         description
+        contracts {
+          network
+          address
+        }
       }
     }
   }

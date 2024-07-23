@@ -60,6 +60,10 @@ export type ThirdPartyProvider = {
     thirdParty: {
       name: string
       description: string
+      contracts?: {
+        network: string
+        address: string
+      }[]
     }
   }
 }

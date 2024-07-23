@@ -17,6 +17,22 @@ testWithComponents(() => {
         }
       },
       {
+        id: 'urn:decentraland:mumbai:collections-thirdparty:provider-v2',
+        resolver: '',
+        metadata: {
+          thirdParty: {
+            name: 'healthy',
+            description: 'description',
+            contracts: [
+              {
+                network: 'network',
+                address: 'address'
+              }
+            ]
+          }
+        }
+      },
+      {
         id: 'urn:decentraland:mumbai:collections-thirdparty:ignore-me',
         resolver: 'https://resolver-unhealthy.zone/v1',
         metadata: {
@@ -57,6 +73,22 @@ testWithComponents(() => {
           thirdParty: {
             name: 'healthy',
             description: 'description'
+          }
+        }
+      },
+      {
+        id: 'urn:decentraland:mumbai:collections-thirdparty:provider-v2',
+        resolver: '',
+        metadata: {
+          thirdParty: {
+            name: 'healthy',
+            description: 'description',
+            contracts: [
+              {
+                network: 'network',
+                address: 'address'
+              }
+            ]
           }
         }
       }
