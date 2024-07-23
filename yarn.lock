@@ -319,10 +319,10 @@
     eslint-plugin-prettier "^5.1.3"
     prettier "^3.2.4"
 
-"@dcl/urn-resolver@^3.4.0":
-  version "3.4.0"
-  resolved "https://registry.yarnpkg.com/@dcl/urn-resolver/-/urn-resolver-3.4.0.tgz#16c3d1d7d61b0345cdfd74c387d19df5d584bc9d"
-  integrity sha512-OKa4YTb03akx9Ic5YAjoF081gEsbd+1ITS1Gv33xlxNhkdA2p0jyWtqdZgzlCCMLbw+L6eIohRhhgqlmB0q32g==
+"@dcl/urn-resolver@^3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@dcl/urn-resolver/-/urn-resolver-3.6.0.tgz#4450b3869433aa6724306c34769846bcd54ccc35"
+  integrity sha512-hU8bCeanfMq3BmYkhBxcZ4zkH53atsCErmfN8GiTHEj0wuDCS7wKkzQPPdKPGOZieAfgsjm16/JmSXg0kAHgtA==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
