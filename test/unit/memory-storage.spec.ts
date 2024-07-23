@@ -1,8 +1,6 @@
-import { error } from 'console'
 import { ThirdPartyProviderHealthChecker } from '../../src/adapters/third-party-provider-health-checker'
 import { ThirdPartyProvidersFetcher } from '../../src/adapters/third-party-providers-fetcher'
 import { createThirdPartyProvidersMemoryStorage } from '../../src/logic/third-party-providers-memory-storage'
-import { ILoggerComponent } from '@well-known-components/interfaces'
 
 describe('memory-storage should', () => {
   const thirdPartyProviders = [

@@ -1,5 +1,5 @@
 import { ThirdPartyProvider } from '../../src/types'
-import { default as sut } from './../../src/logic/third-party-url-parser'
+import { parse as sut } from './../../src/logic/third-party-url-parser'
 
 describe('url-parser should', () => {
   it('correctly parse a Third Party Provider', async () => {

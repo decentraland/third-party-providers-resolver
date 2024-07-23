@@ -1,5 +1,5 @@
 import { IBaseComponent } from '@well-known-components/interfaces'
-import parse from '../logic/third-party-url-parser'
+import { checkProviderUrn, parse } from '../logic/third-party-url-parser'
 import { AppComponents, ThirdPartyProvider } from '../types'
 
 export type ThirdPartyProviderHealthChecker = IBaseComponent & {
@@ -32,7 +32,14 @@ export function createThirdPartyProviderHealthComponent({
       }
 
       try {
+        await checkProviderUrn(thirdPartyProvider.id)
+
+        if (thirdPartyProvider.metadata.thirdParty.contracts) {
+          return true
+        }
+
         thirdPartyUrl = await parse(thirdPartyProvider)
+
         await fetch.fetch(thirdPartyUrl)
 
         // report provider as healthy
@@ -63,7 +70,7 @@ export function createThirdPartyProviderHealthComponent({
           providerState = HealthState.Unhealthy
         }
 
-        // report provider as unhealthy or inexistent
+        // report provider as unhealthy or nonexistent
         metrics.observe('third_party_provider_health', thirdPartyProviderMetricLabels, providerState)
 
         return false
