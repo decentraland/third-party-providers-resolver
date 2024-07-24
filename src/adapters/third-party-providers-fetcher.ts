@@ -42,6 +42,15 @@ export function createThirdPartyProvidersFetcher({
           1
         )
 
+        for (const thirdParty of queryResult.thirdParties) {
+          if (thirdParty.metadata.thirdParty.contracts) {
+            thirdParty.metadata.thirdParty.contracts = thirdParty.metadata.thirdParty.contracts.map((c) => ({
+              network: c.network.toLowerCase(),
+              address: c.address.toLowerCase()
+            }))
+          }
+        }
+
         return queryResult.thirdParties
       } catch (error: any) {
         logger.error('Failed while retrieving all Third Party providers')
