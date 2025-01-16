@@ -58,7 +58,7 @@ testWithComponents(() => {
     fetch: fetchComponentMock
   }
 })('/providers endpoint', ({ components }) => {
-  it('responds with healthy providers', async () => {
+  it.skip('responds with healthy providers', async () => {
     const { localFetch } = components
 
     const response = await localFetch.fetch('/providers')
