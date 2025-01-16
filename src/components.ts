@@ -11,9 +11,9 @@ import { AppComponents, GlobalContext } from './types'
 import { metricsDeclaration } from './metrics'
 import { IFetchComponent } from '@well-known-components/interfaces'
 import { createTheGraphComponent, TheGraphComponent } from './ports/the-graph'
-import { createThirdPartyProviderHealthComponent } from './adapters/third-party-provider-health-checker'
 import { createThirdPartyProvidersFetcher } from './adapters/third-party-providers-fetcher'
 import { createThirdPartyProvidersMemoryStorage } from './logic/third-party-providers-memory-storage'
+import { createMockedThirdPartyProviderHealthComponent } from './adapters/mocked-third-party-provider-health-checker'
 
 // Initialize all the components of the app
 export async function initComponents(injectedComponents?: Partial<AppComponents>): Promise<AppComponents> {
@@ -29,7 +29,8 @@ export async function initComponents(injectedComponents?: Partial<AppComponents>
     injectedComponents?.theGraph ?? (await createTheGraphComponent({ config, logs, fetch, metrics }))
 
   const thirdPartyProvidersFetcher = createThirdPartyProvidersFetcher({ theGraph, logs })
-  const thirdPartyProviderHealthChecker = createThirdPartyProviderHealthComponent({ fetch, logs, metrics })
+  // const thirdPartyProviderHealthChecker = createThirdPartyProviderHealthComponent({ fetch, logs, metrics })
+  const thirdPartyProviderHealthChecker = createMockedThirdPartyProviderHealthComponent()
   const thirdPartyProvidersMemoryStorage = createThirdPartyProvidersMemoryStorage({
     thirdPartyProvidersFetcher,
     thirdPartyProviderHealthChecker,
